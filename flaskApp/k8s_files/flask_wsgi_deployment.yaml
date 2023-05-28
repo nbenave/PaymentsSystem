@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-wsgi-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-wsgi-app
+  template:
+    metadata:
+      labels:
+        app: flask-wsgi-app
+    spec:
+      containers:
+        - name: flask-wsgi-app
+          image: '850414232980.dkr.ecr.eu-central-1.amazonaws.com/myrepo:wsgi-flask-python-1.0'
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: "256Mi"
+            requests:
+              cpu: "0.25"
+              memory: "64Mi"
+          env:
+            - name: RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: flask-rabbitmq-credentials
+                  key: username
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: flask-rabbitmq-credentials
+                  key: password
+          ports:
+            - containerPort: 8192
+          volumeMounts:
+            - name: config-volume
+              mountPath: "/k8s_files/flask_cm.yaml"
+            - name: json-schema-volume
+              mountPath: "/k8s_files/jsonschema.yaml"
+      volumes:
+        - name: config-volume
+          configMap:
+            name: flask-cm
+        - name: json-schema-volume
+          configMap:
+            name: payment-schema

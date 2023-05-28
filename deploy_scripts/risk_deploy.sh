@@ -1,0 +1,1 @@
+kubectl apply -f ../riskEngine/k8s_files/

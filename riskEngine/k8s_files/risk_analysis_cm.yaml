@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: risk-analysis-cm
+data:
+  RMQ_HOST: "a75b10a42d54343d5807c33c915d4027-772471113.eu-central-1.elb.amazonaws.com"
+  RMQ_PORT: "5672"
+  LOG_FORMAT: "[%(levelname)s][%(asctime)s][%(name)s]::%(message)s"
+  LOG_LEVEL: "INFO"
+  RISK_SUCCESS_THRESHOLD: "0.7"
+  APPROVED_LABEL: "APPROVED"
+  REJECTED_LABEL: "REJECTED"

@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: payment-schema
+data:
+  config.json: |-
+    {
+      "type":"object",
+      "properties" : {
+            "amount" : {
+                "type" : "number",
+                "exclusiveMinimum" : 0
+            },
+            "currency" : {
+                "type" : "string",
+                "enum" : ["USD","ILS","EUR"]
+            },
+            "user_id": {
+                "type" : "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "payee_id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "payment_method_id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            }
+        },
+        "required" : ["amount","currency","user_id","payee_id","payment_method_id"],
+        "additionalProperties": false
+    }

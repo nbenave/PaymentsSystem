@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flask-cm
+data:
+  RMQ_QUEUE: "rest-requests"
+  RMQ_EXCHANGE: "flask_exchange"
+  RMQ_EXCHANGE_TYPE: "direct"
+  RMQ_BIND_RK: "rest-requests"
+  RMQ_HOST: "a75b10a42d54343d5807c33c915d4027-772471113.eu-central-1.elb.amazonaws.com"
+  RMQ_PORT: "5672"
+  LOG_FORMAT: "[%(levelname)s][%(asctime)s][%(name)s]::%(message)s"
+  LOG_LEVEL: "DEBUG"
+  APP_PORT: "8192"
+  LIMIT_GET_DEFAULT: "20"
+  APP_GENERATE_TRAFFIC_MAX_THRESHOLD: "100000"

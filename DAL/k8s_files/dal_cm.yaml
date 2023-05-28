@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dal-cm
+data:
+  RMQ_METHOD_POST_QUEUE: "risk_engine_post_payments_requests"
+  RMQ_METHOD_GET_QUEUE: "risk_engine_get_payments_requests"
+  RMQ_EXCHANGE: "risk_exchange"
+  RMQ_RESPONSE_EXCHANGE: "flask_exchange"
+  RMQ_METHOD_POST_RK: "post"
+  RMQ_METHOD_GET_RK: "get"
+  RMQ_RK: "risk"
+  RMQ_HOST: "a75b10a42d54343d5807c33c915d4027-772471113.eu-central-1.elb.amazonaws.com"
+  RMQ_PORT: "5672"
+  PREFETCH_COUNT: "128"
+  LOG_FORMAT: "[%(levelname)s][%(asctime)s][%(name)s]::%(message)s"
+  LOG_LEVEL: "INFO"
+  BATCH_SIZE: "20"
+  BATCH_TIMEOUT: "15"
+  POSTGRESQL_HOST: "a787283b2acd446988c17a47e610c552-1989815858.eu-central-1.elb.amazonaws.com"
+  POSTGRESQL_DB: "mydb"
+  POSTGRESQL_PAYMENTS_TABLE: "payments"
+  POST_APPROVED_RESPONSE: "Payment created successfully"
+  POST_REJECTED_RESPONSE: "The request has been rejected!"
+  PAYEES: 'payee_id'
+  PAYMENT_METHODS: 'payment_method_id'
