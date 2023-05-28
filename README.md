@@ -4,7 +4,7 @@
 ## Demo
 - Deploy stack
 - Execute `python demo_post.py --num_of_requests XXX --server nginx` to generate requests in parallel  
-- Request reply on [`postman`](https://web.postman.co)
+- Request replay on [`postman`](https://web.postman.co)
 
 ## Dashboard, UI and Servers
 - [RMQ UI](http://a75b10a42d54343d5807c33c915d4027-772471113.eu-central-1.elb.amazonaws.com:15672)
