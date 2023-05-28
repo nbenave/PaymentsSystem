@@ -2,6 +2,7 @@
 ![Image description](Images/PaymentSystem.png)
 
 ## Demo
+- Deploy stack
 - Execute `python demo_post.py --num_of_requests XXX --server nginx` to generate requests in parallel  
 - Request reply on [`postman`](https://web.postman.co)
 
