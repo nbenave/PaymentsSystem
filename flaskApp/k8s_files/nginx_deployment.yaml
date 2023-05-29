@@ -17,10 +17,10 @@ spec:
           image: nginx:latest
           resources:
             limits:
-              cpu: "0.75"
+              cpu: "1"
               memory: "256Mi"
             requests:
-              cpu: "0.25"
+              cpu: "0.5"
               memory: "64Mi"
           ports:
             - containerPort: 80
