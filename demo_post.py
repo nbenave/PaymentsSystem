@@ -34,19 +34,11 @@ def send_post_request(url):
 
 def parallel_requests_generator(url,num_of_requests):
     start = time.time()
-    with ThreadPoolExecutor(max_workers=max(200,int(num_of_requests))) as executor:
-        reqs = [executor.submit(send_post_request,url) for _ in range(num_of_requests)]
-
-        responses = [response.result() for response in reqs ]
-
-        end = time.time()
-        try:
-            for i,response in enumerate(responses[-20:]):
-                print('-'*10 , i , '-'*10)
-                print(json.dumps(response))
-                print(f'Total duration= {round((end - start), 2)}, Total responses= {num_of_requests}, rate= {num_of_requests / (end - start)}')
-        except Exception as e:
-            print(f'Total duration= {round((end - start), 2)}, Total responses= {num_of_requests}, rate= {num_of_requests / (end - start)}')
+    with ThreadPoolExecutor(max_workers=max(10,int(num_of_requests))) as executor:
+        responses = executor.map(send_post_request, [url for _ in range(num_of_requests)])
+    end = time.time()
+    time.sleep(2)
+    print(f'Total duration= {round((end - start), 2)}, Total responses= {num_of_requests}, rate= {num_of_requests / (end - start)}')
 
 def parse_opt():
     parser = argparse.ArgumentParser()
@@ -60,10 +52,7 @@ def generate_url(hostname):
 
 def main(num_of_requests,server):
     hostname= servers[server]
-    try:
-        parallel_requests_generator(generate_url(hostname),num_of_requests)
-    except :
-        print('Done.')
+    parallel_requests_generator(generate_url(hostname),num_of_requests)
 
 if __name__ == '__main__':
     opt = parse_opt()
