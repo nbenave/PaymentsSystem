@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import json
 from enum import Enum
 from dataclasses import dataclass,asdict
-from load_config import load_config
+from typing import Dict
 from random import random
 import os
 import sys
@@ -13,13 +13,6 @@ load_config('risk_analysis_cm')
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(os.environ['LOG_LEVEL'])
 logging.basicConfig(format=os.environ['LOG_FORMAT'], stream=sys.stdout)
-
-
-class AbstractRiskAnalysis(ABC):
-
-    @abstractmethod
-    def do_risk_analysis(self, payment_message: str) -> bool:
-        """"""
 
 
 class DataclassEncoder(json.JSONEncoder):
@@ -36,10 +29,7 @@ class RiskStateField(Enum):
 @dataclass
 class RiskMessage:
     risk_level: float = None
-    @property
-    def risk_state(self):
-        return RiskStateField.APPROVED if self.risk_level < float(os.environ['RISK_SUCCESS_THRESHOLD']) \
-                                        else RiskStateField.REJECTED
+    risk_state: RiskStateField = None
 
     def is_approved(self):
         return self.risk_state == RiskStateField.APPROVED
@@ -51,10 +41,45 @@ class RiskMessage:
         return f'risk_level : {self.risk_level} risk_state : {self.risk_state}'
 
 
-class RiskAnalysis(AbstractRiskAnalysis):
-    def __init__(self):
-        self._risk_engine_threshold = float(os.environ['RISK_SUCCESS_THRESHOLD'])
+class AbstractRiskAnalysis(ABC):
 
-    def do_risk_analysis(self, payment_message: str) -> RiskMessage:
+    @abstractmethod
+    def evaluate_risk(self,risk_level: float) -> bool:
+        """Interface Method"""
+    @abstractmethod
+    def perform_risk_analysis(self, payment_message: Dict) -> RiskMessage:
+        """Interface Method"""
+
+
+class RiskAnalysis(AbstractRiskAnalysis):
+    def evaluate_risk(self,risk_level: float) -> RiskStateField:
+        return RiskStateField.APPROVED \
+            if risk_level < float(os.environ['RISK_SUCCESS_THRESHOLD']) \
+            else RiskStateField.REJECTED
+
+    def perform_risk_analysis(self, payment_message: Dict) -> RiskMessage:
+        raise NotImplemented
+
+
+class RiskAnalysisV1(RiskAnalysis):
+    def perform_risk_analysis(self, payment_message: Dict) -> RiskMessage:
         risk_level = round(random(), 2)
-        return RiskMessage(risk_level)
+        risk_state = self.evaluate_risk(risk_level)
+        return RiskMessage(risk_level, risk_state)
+
+
+class RiskAnalysisV2(RiskAnalysis):
+
+    def perform_risk_analysis(self, payment_message: Dict) -> RiskMessage:
+        risk_level = 100 if float(payment_message.get('request').get('amount')) > 7 else 0
+        risk_state = self.evaluate_risk(risk_level)
+        return RiskMessage(risk_level, risk_state)
+
+
+class RiskAnalysisFactory:
+    @staticmethod
+    def get_risk_analysis(risk_analysis_type:str):
+        mapper = {'v1': RiskAnalysisV1(),
+                  'v2': RiskAnalysisV2()}
+
+        return mapper.get(risk_analysis_type)

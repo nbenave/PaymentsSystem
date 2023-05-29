@@ -5,7 +5,7 @@ import sys
 import os
 from typing import Dict,Callable
 from load_config import load_config
-from RiskAnalysis import RiskAnalysis, RiskMessage, DataclassEncoder
+from RiskAnalysis import RiskMessage, DataclassEncoder, RiskAnalysisFactory
 load_config('risk_engine_cm')
 
 logger = logging.getLogger(__name__)
@@ -14,7 +14,8 @@ logging.basicConfig(format=os.environ['LOG_FORMAT'], stream=sys.stdout)
 
 class RiskEngine:
     def __init__(self):
-        self._risk_analysis = RiskAnalysis()
+        self._risk_analysis = RiskAnalysisFactory.get_risk_analysis(os.environ['RISK_VERSION'])
+        logger.info(f'Risk analysis Created {self._risk_analysis}')
         self._username = str(os.environ['RABBITMQ_USERNAME'])
         self._password = str(os.environ['RABBITMQ_PASSWORD'])
         self._rabbitmq_host = os.environ['RMQ_HOST']
@@ -65,7 +66,7 @@ class RiskEngine:
         :return:
         """
         request, rest_rk = self.process_message(request, risk_object)
-        logger.info(f'forward request to dal')
+        logger.info(f'forward request to dal : {request}')
         self._channel.basic_publish(exchange=self._exchange,
                                     routing_key=rest_rk,
                                     properties=pika.BasicProperties(
@@ -81,7 +82,7 @@ class RiskEngine:
         """
         payment_message = json.loads(body.decode())
         logger.info(f'Received message from my_queue : {payment_message}')
-        risk_obj = self._risk_analysis.do_risk_analysis(payment_message)
+        risk_obj = self._risk_analysis.perform_risk_analysis(payment_message)
         self.forward_request_to_dal(request=payment_message,
                                     risk_object=risk_obj,
                                     reply_to=properties.reply_to,

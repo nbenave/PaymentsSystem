@@ -34,13 +34,11 @@ def send_post_request(url):
 
 def parallel_requests_generator(url,num_of_requests):
     start = time.time()
-    with ThreadPoolExecutor(max_workers=int(num_of_requests)) as executor:
+    with ThreadPoolExecutor(max_workers=max(200,int(num_of_requests))) as executor:
         responses = executor.map(send_post_request, [url for _ in range(num_of_requests)])
     end = time.time()
-    for i,response in enumerate(responses[-20:]):
-        print('-'*10, i+1 ,'-'*10)
-        print(json.dumps(json.loads(response),indent=2))
-    print(f'Total duration= {round((end - start),2)}, Total responses= {i+1}, rate= {num_of_requests/(end-start)}')
+    time.sleep(2)
+    print(f'Total duration= {round((end - start), 2)}, Total responses= {num_of_requests}, rate= {num_of_requests / (end - start)}')
 
 def parse_opt():
     parser = argparse.ArgumentParser()

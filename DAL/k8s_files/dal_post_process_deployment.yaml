@@ -17,11 +17,11 @@ spec:
           image: '850414232980.dkr.ecr.eu-central-1.amazonaws.com/myrepo:dal-python-1.0'
           resources:
             limits:
+              cpu: "1"
+              memory: "512Mi"
+            requests:
               cpu: "0.4"
               memory: "64Mi"
-            requests:
-              cpu: "0.2"
-              memory: "32Mi"
           env:
             - name: CONSUME_QUEUE
               valueFrom:
