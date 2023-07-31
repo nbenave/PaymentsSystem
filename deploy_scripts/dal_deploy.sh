@@ -1,1 +1,0 @@
-kubectl apply -f ../DAL/k8s_files/

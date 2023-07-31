@@ -1,1 +1,0 @@
-kubectl apply -f ../flaskApp/k8s_files/

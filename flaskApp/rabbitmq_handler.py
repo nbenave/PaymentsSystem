@@ -1,10 +1,17 @@
 import json
 import time
+from typing import overload
 import uuid
 import pika
 import os
+from flask import jsonify
 
-def publish_request(request_data):
+@overload
+async def publish_request(request_data):
+    return '{"res" : "Hi dummy"}'
+
+@overload
+def publish_request(request_data, var):
     exchange = os.environ['RMQ_EXCHANGE']
     exchange_type = os.environ['RMQ_EXCHANGE_TYPE']
     host = os.environ['RMQ_HOST']
